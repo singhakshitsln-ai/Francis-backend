@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>Francis Cyber Toolkit</title>
+
+<link rel="manifest" href="manifest.json">\n<link rel="icon" href="icon.svg" type="image/svg+xml">
+
+<meta
+name="theme-color"
+content="#8b5cf6"
+>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:#0b0b0f;
+color:white;
+font-family:Arial,sans-serif;
+overflow-x:hidden;
+text-align:justify;
+}
+
+#matrix{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+z-index:-1;
+}
+
+header{
+padding:22px;
+text-align:center;
+font-size:30px;
+font-weight:bold;
+background:#000;
+color:#8b5cf6;
+box-shadow:0 0 20px #8b5cf6;
+}
+
+section{
+max-width:1200px;
+margin:auto;
+padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:18px;
+}
+
+.card{
+background:#14141c;
+padding:18px;
+border-radius:14px;
+box-shadow:0 0 12px rgba(139,92,246,.25);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 0 25px #8b5cf6;
+}
+
+h3{
+margin-top:0;
+color:#c084fc;
+text-align:center;
+}
+
+input,
+textarea,
+select{
+width:100%;
+padding:10px;
+margin-top:10px;
+margin-bottom:10px;
+border:none;
+border-radius:8px;
+background:#0f0f18;
+color:white;
+}
+
+button{
+width:100%;
+background:#8b5cf6;
+border:none;
+padding:12px;
+border-radius:8px;
+cursor:pointer;
+color:white;
+font-weight:bold;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.03);
+background:#a855f7;
+box-shadow:0 0 20px #8b5cf6;
+}
+
+.output{
+margin-top:10px;
+word-break:break-word;
+}
+
+footer{
+text-align:center;
+padding:20px;
+opacity:.7;
+}
+
+.headerBar{
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+}
+
+#loginArea{
+display:flex;
+justify-content:center;
+padding:20px;
+}
+
+#loginBtn{
+width:auto;
+padding:8px 16px;
+font-size:14px;
+}
+
+#userBadge{
+display:none;
+align-items:center;
+gap:8px;
+font-size:14px;
+font-weight:normal;
+}
+
+#userBadge img{
+width:28px;
+height:28px;
+border-radius:50%;
+}
+
+#userBadge button{
+width:auto;
+padding:6px 12px;
+font-size:12px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<header>
+<div class="headerBar">
+
+<span>Francis Cyber Toolkit</span>
+
+</div>
+</header>
+
+
+<section>
+
+<div class="card">
+<h3>SHA-256 Hasher</h3>
+<input type="file" id="hashFile">
+<button onclick="hashFile()">Hash File</button>
+<div class="output" id="hashOut"></div>
+</div>
+
+<div class="card">
+<h3>Password Generator</h3>
+<button onclick="generatePassword()">Generate</button>
+<div class="output" id="passOut"></div>
+</div>
+
+<div class="card">
+<h3>UUID Generator</h3>
+<button onclick="generateUUID()">Generate UUID</button>
+<div class="output" id="uuidOut"></div>
+</div>
+
+<div class="card">
+<h3>Base64 Encoder</h3>
+<textarea id="baseText"></textarea>
+<button onclick="encodeBase64()">Encode</button>
+<div class="output" id="baseOut"></div>
+</div>
+
+<div class="card">
+<h3>Base64 Decoder</h3>
+<textarea id="decodeText"></textarea>
+<button onclick="decodeBase64()">Decode</button>
+<div class="output" id="decodeOut"></div>
+</div>
+
+<div class="card">
+<h3>Word Counter</h3>
+<textarea id="wordText"></textarea>
+<button onclick="countWords()">Count</button>
+<div class="output" id="wordOut"></div>
+</div>
+
+<div class="card">
+<h3>Character Counter</h3>
+<textarea id="charText"></textarea>
+<button onclick="countChars()">Count</button>
+<div class="output" id="charOut"></div>
+</div>
+
+<div class="card">
+<h3>Case Converter</h3>
+<textarea id="caseText"></textarea>
+<button onclick="upperCaseText()">UPPERCASE</button>
+<button onclick="lowerCaseText()">lowercase</button>
+<div class="output" id="caseOut"></div>
+</div>
+
+<div class="card">
+<h3>Random Number</h3>
+<button onclick="randomNumber()">Generate</button>
+<div class="output" id="randOut"></div>
+</div>
+
+<div class="card">
+<h3>Calculator</h3>
+<input type="text" id="calcInput" placeholder="Example: 5+5*2">
+<button onclick="calculate()">Calculate</button>
+<div class="output" id="calcOut"></div>
+</div>
+
+<div class="card">
+<h3>JSON Formatter</h3>
+<textarea id="jsonText"></textarea>
+<button onclick="formatJSON()">Format</button>
+<div class="output" id="jsonOut"></div>
+</div>
+
+<div class="card">
+<h3>Timestamp Converter</h3>
+<button onclick="timestampNow()">Get Timestamp</button>
+<div class="output" id="timeOut"></div>
+</div>
+
+<div class="card">
+<h3>Clipboard Copier</h3>
+<textarea id="clipText"></textarea>
+<button onclick="copyText()">Copy</button>
+</div>
+
+<div class="card">
+<h3>Notes Saver</h3>
+<textarea id="notes"></textarea>
+<button onclick="saveNotes()">Save Notes</button>
+<button onclick="loadNotes()">Load Notes</button>
+</div>
+
+<div class="card">
+<h3>Text To Speech</h3>
+<textarea id="speakText"></textarea>
+<button onclick="speakTextNow()">Speak</button>
+</div>
+
+<div class="card">
+<h3>Backend API Test</h3>
+<button onclick="testBackend()">Ping Backend</button>
+<div class="output" id="backendOut"></div>
+</div>
+
+</section>
+
+<footer>
+© 2026 Francis Cyber Toolkit
+</footer>
+
+<div id="loginArea">
+
+<a id="loginBtn" href="login.html">Login</a>
+
+<div id="userBadge">
+<img id="userAvatar" src="" alt="">
+<span id="userName"></span>
+<button onclick="logoutUser()">Logout</button>
+</div>
+
+</div>
+
+<script>
+
+/* HASH */
+
+async function hashFile(){
+
+const file=document.getElementById("hashFile").files[0];
+
+if(!file)return;
+
+const buffer=await file.arrayBuffer();
+
+const hash=await crypto.subtle.digest(
+"SHA-256",
+buffer
+);
+
+document.getElementById("hashOut").innerText=
+[...new Uint8Array(hash)]
+.map(b=>b.toString(16).padStart(2,"0"))
+.join("");
+
+}
+
+/* PASSWORD */
+
+function generatePassword(){
+
+const chars=
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$";
+
+let p="";
+
+for(let i=0;i<16;i++){
+
+p+=chars[
+Math.floor(Math.random()*chars.length)
+];
+
+}
+
+document.getElementById("passOut").innerText=p;
+
+}
+
+/* UUID */
+
+function generateUUID(){
+
+document.getElementById("uuidOut").innerText=
+crypto.randomUUID();
+
+}
+
+/* BASE64 */
+
+function encodeBase64(){
+
+document.getElementById("baseOut").innerText=
+btoa(
+document.getElementById("baseText").value
+);
+
+}
+
+function decodeBase64(){
+
+try{
+
+document.getElementById("decodeOut").innerText=
+atob(
+document.getElementById("decodeText").value
+);
+
+}catch{
+
+document.getElementById("decodeOut").innerText=
+"Invalid Base64";
+
+}
+
+}
+
+/* WORD */
+
+function countWords(){
+
+const t=
+document.getElementById("wordText")
+.value
+.trim();
+
+document.getElementById("wordOut")
+.innerText=
+"Words: "+
+(t?t.split(/\s+/).length:0);
+
+}
+
+/* CHARS */
+
+function countChars(){
+
+document.getElementById("charOut")
+.innerText=
+"Characters: "+
+document.getElementById("charText").value.length;
+
+}
+
+/* CASE */
+
+function upperCaseText(){
+
+document.getElementById("caseOut")
+.innerText=
+document.getElementById("caseText")
+.value
+.toUpperCase();
+
+}
+
+function lowerCaseText(){
+
+document.getElementById("caseOut")
+.innerText=
+document.getElementById("caseText")
+.value
+.toLowerCase();
+
+}
+
+/* RANDOM */
+
+function randomNumber(){
+
+document.getElementById("randOut")
+.innerText=
+Math.floor(Math.random()*1000000);
+
+}
+
+/* CALCULATOR */
+
+function calculate(){
+
+try{
+
+document.getElementById("calcOut")
+.innerText=
+eval(
+document.getElementById("calcInput").value
+);
+
+}catch{
+
+document.getElementById("calcOut")
+.innerText="Invalid expression";
+
+}
+
+}
+
+/* JSON */
+
+function formatJSON(){
+
+try{
+
+const obj=
+JSON.parse(
+document.getElementById("jsonText").value
+);
+
+document.getElementById("jsonOut")
+.innerText=
+JSON.stringify(obj,null,2);
+
+}catch{
+
+document.getElementById("jsonOut")
+.innerText=
+"Invalid JSON";
+
+}
+
+}
+
+/* TIMESTAMP */
+
+function timestampNow(){
+
+document.getElementById("timeOut")
+.innerText=
+Date.now();
+
+}
+
+/* COPY */
+
+function copyText(){
+
+navigator.clipboard.writeText(
+document.getElementById("clipText").value
+);
+
+alert("Copied");
+
+}
+
+/* NOTES */
+
+async function saveNotes(){
+
+if(!currentUser){
+
+alert("Please login to save notes");
+
+goToLogin();
+
+return;
+
+}
+
+try{
+
+const r=
+await fetch(
+BACKEND_URL+"/api/notes",
+{
+method:"POST",
+credentials:"include",
+headers:{
+"Content-Type":"application/json",
+...(await authHeaders())
+},
+body:JSON.stringify({
+notes:document.getElementById("notes").value
+})
+}
+);
+
+if(r.status===401){
+
+alert("Session expired, please login again");
+
+showLoggedOut();
+
+goToLogin();
+
+return;
+
+}
+
+alert("Saved");
+
+}catch{
+
+alert("Failed to save (backend offline)");
+
+}
+
+}
+
+async function loadNotes(){
+
+if(!currentUser){
+
+alert("Please login to load notes");
+
+goToLogin();
+
+return;
+
+}
+
+try{
+
+const r=
+await fetch(
+BACKEND_URL+"/api/notes",
+{headers:await authHeaders()}
+);
+
+if(r.status===401){
+
+alert("Session expired, please login again");
+
+showLoggedOut();
+
+goToLogin();
+
+return;
+
+}
+
+const data=await r.json();
+
+document.getElementById("notes").value=
+data.notes||"";
+
+}catch{
+
+document.getElementById("notes").value=
+"";
+
+alert("Failed to load (backend offline)");
+
+}
+
+}
+
+/* SPEECH */
+
+function speakTextNow(){
+
+speechSynthesis.speak(
+new SpeechSynthesisUtterance(
+document.getElementById("speakText").value
+)
+);
+
+}
+
+/* AUTH */
+
+const BACKEND_URL="https://Francis-backend.onrender.com";
+let currentUser=null;
+
+function goToLogin(){ window.location.href="login.html"; }
+
+async function logoutUser(){
+  try{
+    if(window.firebaseSignOut) await window.firebaseSignOut();
+  }catch{}
+  showLoggedOut();
+}
+
+function showLoggedIn(user){
+  currentUser=user;
+  document.getElementById("loginBtn").style.display="none";
+  const badge=document.getElementById("userBadge");
+  badge.style.display="flex";
+  document.getElementById("userAvatar").src=user.photoURL||user.avatar||"icon.svg";
+  document.getElementById("userName").innerText=user.displayName||user.name||user.email||"Account";
+}
+
+function showLoggedOut(){
+  currentUser=null;
+  document.getElementById("loginBtn").style.display="block";
+  document.getElementById("userBadge").style.display="none";
+}
+
+async function authHeaders(){
+  if(!window.firebaseCurrentUser) return {};
+  const token=await window.firebaseCurrentUser.getIdToken();
+  return {Authorization:"Bearer "+token};
+}
+
+/* BACKEND */
+
+async function testBackend(){
+
+try{
+
+const r=
+await fetch(
+"https://Francis-backend.onrender.com/api/ping"
+);
+
+const data=await r.json();
+
+document.getElementById("backendOut")
+.innerText=
+data.message;
+
+}catch{
+
+document.getElementById("backendOut")
+.innerText=
+"Backend offline";
+
+}
+
+}
+
+/* MATRIX */
+
+const canvas=
+document.getElementById("matrix");
+
+const ctx=
+canvas.getContext("2d");
+
+canvas.width=
+window.innerWidth;
+
+canvas.height=
+window.innerHeight;
+
+const chars=
+"01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%^&*";
+
+const fontSize=14;
+
+const columns=
+canvas.width/fontSize;
+
+const drops=[];
+
+for(let i=0;i<columns;i++){
+
+drops[i]=1;
+
+}
+
+function drawMatrix(){
+
+ctx.fillStyle=
+"rgba(0,0,0,0.05)";
+
+ctx.fillRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+ctx.fillStyle="#8b5cf6";
+
+ctx.font=
+fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+
+const text=
+chars[
+Math.floor(Math.random()*chars.length)
+];
+
+ctx.fillText(
+text,
+i*fontSize,
+drops[i]*fontSize
+);
+
+if(
+drops[i]*fontSize>canvas.height
+&&
+Math.random()>.975
+){
+
+drops[i]=0;
+
+}
+
+drops[i]++;
+
+}
+
+}
+
+setInterval(drawMatrix,35);
+
+window.addEventListener(
+"resize",
+()=>{
+
+canvas.width=
+window.innerWidth;
+
+canvas.height=
+window.innerHeight;
+
+}
+);
+
+/* PWA */
+
+if("serviceWorker" in navigator){
+
+navigator.serviceWorker.register("sw.js");
+
+}
+
+</script>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { firebaseConfig } from "./firebase-config.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+
+window.firebaseCurrentUser=null;
+window.firebaseSignOut=()=>signOut(auth);
+
+onAuthStateChanged(auth,user=>{
+  window.firebaseCurrentUser=user;
+  if(user) showLoggedIn(user); else showLoggedOut();
+});
+</script>
+
+</body>
+</html>

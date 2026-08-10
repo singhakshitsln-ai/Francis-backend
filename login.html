@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#8b5cf6">
+<title>Login — Francis</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#0b0b0f;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;overflow-x:hidden}
+#matrix{position:fixed;inset:0;width:100%;height:100%;z-index:-1;background:#000}
+.card{width:min(440px,92vw);padding:30px;background:rgba(20,20,28,.96);border:1px solid rgba(139,92,246,.45);border-radius:18px;box-shadow:0 0 35px rgba(139,92,246,.28);text-align:center}
+.logo{width:64px;height:64px;margin:0 auto 12px}
+h1{margin:0;color:#c084fc;font-size:28px} p{color:#aaa;margin:8px 0 24px}
+input{width:100%;padding:13px;margin:7px 0;border:1px solid #333;border-radius:9px;background:#0f0f18;color:#fff;outline:none}
+input:focus{border-color:#8b5cf6}
+button,.back{width:100%;padding:12px;margin-top:9px;border:0;border-radius:9px;background:#8b5cf6;color:#fff;font-weight:bold;cursor:pointer;text-decoration:none;display:block}
+button:hover,.back:hover{background:#a855f7}
+.google{background:#fff;color:#222}.google:hover{background:#eee}
+.github{background:#24292e}.github:hover{background:#333a41}
+.secondary{background:#292936}.secondary:hover{background:#3a3a48}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:#777}.divider:before,.divider:after{content:"";height:1px;background:#333;flex:1}
+#message{min-height:20px;margin-top:14px;font-size:14px;color:#c084fc}
+.small{font-size:12px;color:#888;margin-top:16px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<main class="card">
+<img class="logo" src="icon.svg" alt="Francis">
+<h1 id="title">Welcome to Francis</h1>
+<p id="subtitle">Sign in to continue</p>
+
+<form id="authForm">
+<input id="email" type="email" placeholder="Email address" autocomplete="email" required>
+<input id="password" type="password" placeholder="Password" autocomplete="current-password" required>
+<button id="submitBtn" type="submit">Sign In</button>
+</form>
+
+<div class="row">
+<button id="signupBtn" class="secondary" type="button">Create Account</button>
+<button id="resetBtn" class="secondary" type="button">Reset Password</button>
+</div>
+
+<div class="divider">or</div>
+<button class="google" id="googleBtn" type="button">Continue with Google</button>
+<button class="github" id="githubBtn" type="button">Continue with GitHub</button>
+
+<div id="message"></div>
+<a class="back" href="index.html">Back to Francis</a>
+<div class="small">Authentication is powered by Firebase.</div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { firebaseConfig } from "./firebase-config.js";
+import {
+  getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider,
+  GithubAuthProvider, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+/*
+  Replace the values below with the Web App configuration from:
+  Firebase Console → Project settings → Your apps → Web app.
+  Firebase web config is safe to expose in frontend code.
+*/
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const BACKEND_URL = "https://Francis-backend.onrender.com";
+
+const $ = id => document.getElementById(id);
+const message = text => $("message").textContent = text;
+
+$("authForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  message("Signing in...");
+  try {
+    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+    location.href = "index.html";
+  } catch (err) { message(err.message.replace("Firebase: ","")); }
+});
+
+$("signupBtn").onclick = async () => {
+  if (!$("email").value || !$("password").value) { message("Enter an email and password first."); return; }
+  message("Creating account...");
+  try {
+    await createUserWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+    location.href = "index.html";
+  } catch (err) { message(err.message.replace("Firebase: ","")); }
+};
+
+$("resetBtn").onclick = async () => {
+  if (!$("email").value) { message("Enter your email address first."); return; }
+  try {
+    await sendPasswordResetEmail(auth, $("email").value.trim());
+    message("Password reset email sent.");
+  } catch (err) { message(err.message.replace("Firebase: ","")); }
+};
+
+$("googleBtn").onclick = async () => {
+  message("Opening Google sign-in...");
+  try {
+    await signInWithPopup(auth, new GoogleAuthProvider());
+    location.href = "index.html";
+  } catch (err) { message(err.message.replace("Firebase: ","")); }
+};
+
+$("githubBtn").onclick = async () => {
+  message("Opening GitHub sign-in...");
+  try {
+    await signInWithPopup(auth, new GithubAuthProvider());
+    location.href = "index.html";
+  } catch (err) { message(err.message.replace("Firebase: ","")); }
+};
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    // A user who is already authenticated can simply return home.
+    $("title").textContent = "You're already signed in";
+    $("subtitle").textContent = user.email || user.displayName || "Firebase account";
+  }
+});
+</script>
+
+<script>
+const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
+let drops=[];
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;drops=Array(Math.ceil(canvas.width/14)).fill(1)}
+resize(); addEventListener("resize",resize);
+setInterval(()=>{
+  ctx.fillStyle="rgba(0,0,0,.06)";ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#8b5cf6";ctx.font="14px monospace";
+  const chars="01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%^&*";
+  drops.forEach((y,i)=>{ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*14,y*14);if(y*14>canvas.height&&Math.random()>.975)drops[i]=0;drops[i]++});
+},35);
+</script>
+</body>
+</html>

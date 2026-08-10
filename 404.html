@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+  <meta http-equiv="Cache-Control"
+  content="no-cache, no-store, must-revalidate">
+
+  <title>404 Matrix</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      overflow:hidden;
+      background:black;
+      font-family:monospace;
+      color:#00ff00;
+    }
+
+    canvas{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index:-1;
+    }
+
+    .content{
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:20px;
+    }
+
+    h1{
+      font-size:120px;
+      text-shadow:0 0 20px #00ff00;
+    }
+
+    h2{
+      font-size:32px;
+      margin-top:10px;
+      text-shadow:0 0 10px #00ff00;
+    }
+
+    p{
+      margin-top:20px;
+      font-size:18px;
+      color:#9dff9d;
+    }
+
+    .terminal{
+      margin-top:25px;
+      font-size:14px;
+      color:#66ff66;
+      text-shadow:0 0 5px #00ff00;
+      line-height:1.8;
+    }
+
+    .blink{
+      animation:blink 1s infinite;
+    }
+
+    @keyframes blink{
+      50%{
+        opacity:0;
+      }
+    }
+
+    a{
+      margin-top:30px;
+      padding:14px 28px;
+      border:2px solid #00ff00;
+      color:#00ff00;
+      text-decoration:none;
+      font-size:18px;
+      transition:0.3s;
+      box-shadow:0 0 15px #00ff00;
+    }
+
+    a:hover{
+      background:#00ff00;
+      color:black;
+      box-shadow:0 0 25px #00ff00;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="content">
+
+  <h1>404</h1>
+
+  <h2>SYSTEM FAILURE</h2>
+
+  <p>The page vanished into the Matrix.</p>
+
+  <div class="terminal">
+    > ACCESS DENIED <br>
+    > FILE NOT FOUND <br>
+    > RETURNING HOME<span class="blink">_</span>
+  </div>
+
+  <a href="./index.html">
+    RETURN HOME
+  </a>
+
+</div>
+
+<script>
+
+/* MATRIX EFFECT */
+
+const canvas =
+document.getElementById('matrix');
+
+const ctx =
+canvas.getContext('2d');
+
+canvas.width =
+window.innerWidth;
+
+canvas.height =
+window.innerHeight;
+
+const letters =
+'アァイィウヴエカキクケコサシスセソABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+const fontSize = 16;
+
+const columns =
+canvas.width / fontSize;
+
+const drops = [];
+
+for(let i = 0; i < columns; i++){
+
+  drops[i] = 1;
+
+}
+
+function draw(){
+
+  ctx.fillStyle =
+  'rgba(0,0,0,0.05)';
+
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  ctx.fillStyle =
+  '#00ff00';
+
+  ctx.font =
+  fontSize + 'px monospace';
+
+  for(let i = 0;
+      i < drops.length;
+      i++){
+
+    const text =
+    letters.charAt(
+      Math.floor(
+        Math.random() *
+        letters.length
+      )
+    );
+
+    ctx.fillText(
+      text,
+      i * fontSize,
+      drops[i] * fontSize
+    );
+
+    if(
+      drops[i] * fontSize >
+      canvas.height &&
+      Math.random() > 0.975
+    ){
+
+      drops[i] = 0;
+
+    }
+
+    drops[i]++;
+
+  }
+
+}
+
+setInterval(draw, 35);
+
+window.addEventListener(
+'resize',
+() => {
+
+  canvas.width =
+  window.innerWidth;
+
+  canvas.height =
+  window.innerHeight;
+
+});
+
+
+/* PC SECRET SHORTCUT */
+
+let ctrlCount = 0;
+
+document.addEventListener(
+"keydown",
+function(e){
+
+  if(e.key === "Control"){
+
+    ctrlCount++;
+
+    if(ctrlCount >= 2){
+
+      window.location.href =
+      "/Francis-backend/adminpanel.html";
+
+    }
+
+    setTimeout(function(){
+
+      ctrlCount = 0;
+
+    }, 1000);
+
+  }
+
+});
+
+
+/* MOBILE SECRET TAP */
+
+let tapCount = 0;
+
+document.querySelector("h1")
+.addEventListener(
+"touchstart",
+function(){
+
+  tapCount++;
+
+  if(tapCount >= 5){
+
+    window.location.href =
+    "/Francis-backend/admin.html";
+
+  }
+
+  setTimeout(function(){
+
+    tapCount = 0;
+
+  }, 2500);
+
+});
+
+</script>
+
+</body>
+</html>
+
+     
+
+
+

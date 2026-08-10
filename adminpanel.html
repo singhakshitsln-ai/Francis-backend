@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+    body{
+      background:black;
+      color:#00ff00;
+      font-family:monospace;
+      overflow:hidden;
+    }
+    canvas{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index:-1;
+    }
+    .panel{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:20px;
+    }
+    h1{
+      font-size:60px;
+      text-shadow:0 0 20px #00ff00;
+      margin-bottom:20px;
+    }
+    .box{
+      width:90%;
+      max-width:700px;
+      border:2px solid #00ff00;
+      padding:25px;
+      background:rgba(0,0,0,0.7);
+      box-shadow:0 0 20px #00ff00;
+    }
+    .line{
+      margin:12px 0;
+      font-size:18px;
+      text-align:left;
+    }
+    .status{
+      color:#66ff66;
+    }
+    .danger{
+      color:red;
+    }
+    .btn{
+      margin-top:25px;
+      display:inline-block;
+      padding:14px 28px;
+      border:2px solid #00ff00;
+      color:#00ff00;
+      text-decoration:none;
+      transition:0.3s;
+      box-shadow:0 0 10px #00ff00;
+    }
+    .btn:hover{
+      background:#00ff00;
+      color:black;
+    }
+    .blink{
+      animation:blink 1s infinite;
+    }
+    @keyframes blink{
+      50%{
+        opacity:0;
+      }
+    }
+  </style>
+</head>
+<body>
+<script>
+const password = prompt("ENTER ADMIN PASSWORD");
+if(password !== "Akshit"){
+  document.body.innerHTML = `
+    <div style="
+      background:black;
+      color:red;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-family:monospace;
+      font-size:30px;
+    ">
+      ACCESS DENIED
+    </div>
+  `;
+  throw new Error("Access Denied");
+}
+</script>
+<canvas id="matrix"></canvas>
+<div class="panel">
+  <h1>ADMIN PANEL</h1>
+  <div class="box">
+    <div class="line">
+      > SYSTEM STATUS:
+      <span class="status">ONLINE</span>
+    </div>
+    <div class="line">
+      > SERVER ACCESS:
+      <span class="status">GRANTED</span>
+    </div>
+    <div class="line">
+      > SECURITY FIREWALL:
+      <span class="status">ACTIVE</span>
+    </div>
+    <div class="line">
+      > DATABASE STATUS:
+      <span class="status">CONNECTED</span>
+    </div>
+    <div class="line">
+      > THREAT DETECTION:
+      <span class="danger">0 THREATS</span>
+    </div>
+    <div class="line">
+      > ROOT ACCESS ENABLED<span class="blink">_</span>
+    </div>
+    <a href="./index.html" class="btn">
+      RETURN HOME
+    </a>
+  </div>
+</div>
+<script>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const letters =
+'アァイィウヴエカキクケコサシスセソABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = [];
+for(let i = 0; i < columns; i++){
+  drops[i] = 1;
+}
+function draw(){
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#00ff00';
+  ctx.font = fontSize + 'px monospace';
+  for(let i = 0; i < drops.length; i++){
+    const text = letters.charAt(
+      Math.floor(Math.random() * letters.length)
+    );
+    ctx.fillText(
+      text,
+      i * fontSize,
+      drops[i] * fontSize
+    );
+    if(
+      drops[i] * fontSize > canvas.height &&
+      Math.random() > 0.975
+    ){
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
+}
+setInterval(draw, 35);
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
